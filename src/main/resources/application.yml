@@ -1,0 +1,42 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: ApiGateway
+  cloud:
+    consul:
+      config:
+        enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: bureaucracy-service
+          uri: lb://bureaucracyService
+          predicates:
+            - Path=/bureaucracy/**
+          filters:
+            - RewritePath=/bureaucracy/(?<path>.*), /$\{path}
+
+        - id: medical-service
+          uri: lb://medicalService
+          predicates:
+            - Path=/med/**
+          filters:
+            - RewritePath=/med/(?<path>.*), /$\{path}
+
+        - id: qr-management
+          uri: lb://qrManagementService
+          predicates:
+            - Path=/qr/**
+          filters:
+            - RewritePath=/qr/(?<path>.*), /$\{path}
+
+        - id: auth-service
+          uri: lb://AuthService
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth/(?<path>.*), /$\{path}

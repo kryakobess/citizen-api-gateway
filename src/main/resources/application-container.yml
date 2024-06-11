@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ApiGateway
+  cloud:
+    consul:
+      host: host.docker.internal
+      port: 8500
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+    gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 30s
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: bureaucracy-service
+          uri: http://bureaucracy-service:8080
+          predicates:
+            - Path=/bureaucracy/**
+          filters:
+            - RewritePath=/bureaucracy/(?<path>.*), /$\{path}
+
+        - id: medical-service
+          uri: http://medical-service:8082
+          predicates:
+            - Path=/med/**
+          filters:
+            - RewritePath=/med/(?<path>.*), /$\{path}
+
+        - id: qr-management
+          uri: http://qr-management:8083
+          predicates:
+            - Path=/qr/**
+          filters:
+            - RewritePath=/qr/(?<path>.*), /$\{path}
+
+        - id: auth-service
+          uri: http://auth-service:8081
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth/(?<path>.*), /$\{path}
