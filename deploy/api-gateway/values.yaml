@@ -48,10 +48,10 @@ service:
 
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
+  namespace: default
+  className: ngrok
   hosts:
-    - host: citizens-api.gateway.com
+    - host: sheepdog-sound-sunbird.ngrok-free.app
       paths:
         - path: /
           pathType: Prefix
